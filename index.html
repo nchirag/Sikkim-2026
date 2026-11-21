@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sikkim 2026 · Plan A</title>
+<style>
+:root{--bg:#f3f5f6;--card:#fff;--ink:#16252f;--mute:#5a6b76;--line:#d5dde2;--accent:#1d5c8a;--warn:#fff3d6;--warnink:#6b4a00;--chip:#e6eef3}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1a21;--card:#17252e;--ink:#e8eff3;--mute:#9db0bb;--line:#2b3d48;--accent:#6bb4e6;--warn:#3a2f12;--warnink:#f0d38a;--chip:#223441}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Georgia,"Times New Roman",serif}
+.wrap{max-width:860px;margin:0 auto;padding:0 18px}
+header{padding:56px 0 18px}
+h1{font-size:clamp(2.4rem,8vw,4.2rem);line-height:1;margin:0 0 10px;letter-spacing:-.02em}
+.sub{color:var(--mute);margin:0 0 24px}
+#profile{width:100%;height:auto;display:block}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 8px;font-family:system-ui,sans-serif;font-size:.85rem}
+nav a{padding:5px 12px;border:1px solid var(--line);border-radius:99px;color:var(--ink);text-decoration:none;background:var(--card)}
+nav a:hover,nav a:focus-visible{border-color:var(--accent);outline:none;color:var(--accent)}
+section.day{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:22px 0;padding:22px 22px 18px;scroll-margin-top:12px}
+.dh{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.dh h2{margin:0;font-size:1.5rem}
+.dh .date{font-family:system-ui,sans-serif;color:var(--mute);font-size:.9rem}
+.meta{font-family:system-ui,sans-serif;font-size:.88rem;color:var(--mute);margin:4px 0 12px}
+h3{font-family:system-ui,sans-serif;font-size:.95rem;margin:18px 0 6px;color:var(--accent)}
+ul{margin:0;padding-left:1.1rem}
+li{margin:3px 0}
+.tl li{list-style:none;margin-left:-1.1rem;padding-left:0}
+.tl b{font-family:system-ui,sans-serif;font-size:.85rem;display:inline-block;min-width:4.6rem}
+a{color:var(--accent)}
+.note{background:var(--warn);color:var(--warnink);border-radius:8px;padding:10px 14px;margin:14px 0 0;font-family:system-ui,sans-serif;font-size:.9rem}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;font-family:system-ui,sans-serif;font-size:.85rem}
+.links a{background:var(--chip);padding:4px 10px;border-radius:6px;text-decoration:none}
+.stay{border-top:1px dashed var(--line);margin-top:10px;padding-top:8px}
+.place{margin:7px 0}
+.place small{display:block;color:var(--mute);font-family:system-ui,sans-serif}
+footer{padding:30px 0 60px;color:var(--mute);font-family:system-ui,sans-serif;font-size:.85rem}
+.chk li{margin:2px 0}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>Sikkim 2026</h1>
+<p class="sub">Plan A · 24–31 December · Bagdogra → Darjeeling → North Sikkim → Gangtok → Zuluk → Kolkata · by bike</p>
+<svg id="profile" viewBox="0 0 800 200" role="img" aria-label="Overnight altitude for each day of the trip"></svg>
+<nav id="nav" aria-label="Days"></nav>
+</header>
+<main id="days"></main>
+
+<section class="day" id="checklist">
+<div class="dh"><h2>Before you go</h2></div>
+<ul class="chk">
+<li>Inner Line / protected area permits for North Sikkim (Lachung, Lachen, Yumthang, Zero Point, Gurudongmar): apply ahead and carry several photocopies of ID. Confirm at the Mangan tourism office.</li>
+<li>Check with your bike rental whether the bikes (and their registration) are allowed into North Sikkim. Rules for outside vehicles change, so get this in writing.</li>
+<li>December is winter at altitude: −10°C or colder at Lachen, Gurudongmar, Zero Point. Pack thermals, insulated gloves, balaclava, waterproof riding gear.</li>
+<li>Carry spare tubes, a puncture kit, chain lube, a tow rope and cash (ATMs are scarce above Mangan).</li>
+<li>Fuel up at Mangan or Gangtok; no pumps beyond Chungthang.</li>
+<li>Book every stay ahead for 24–31 Dec: it is peak season, and Lachung/Lachen have very few rooms.</li>
+<li>Road and weather: check the Sikkim police / BRO page and local drivers' groups each morning.</li>
+</ul>
+</section>
+<footer>Times and distances are estimates; check live traffic in Google Maps. Stay links are searches, so confirm prices, availability and reviews before booking.</footer>
+</div>
+
+<script>
+const G=q=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
+const R=(a,b,w)=>"https://www.google.com/maps/dir/?api=1&travelmode=driving&origin="+encodeURIComponent(a)+"&destination="+encodeURIComponent(b)+(w?"&waypoints="+encodeURIComponent(w):"");
+const B=q=>"https://www.booking.com/searchresults.html?ss="+encodeURIComponent(q)+"&checkin=2026-12-24";
+const H=q=>"https://www.hostelworld.com/s?q="+encodeURIComponent(q);
+
+const days=[
+{n:1,date:"Thu 24 Dec",title:"Bagdogra → NJP → Darjeeling (Ghum)",alt:2250,place:"Ghum",
+ meta:"≈ 20 km airport to NJP, then ≈ 70 km uphill · 3–4 hrs of riding",
+ route:[R("Bagdogra Airport","New Jalpaiguri Railway Station"),R("New Jalpaiguri Railway Station","Ghum, Darjeeling","Kurseong")],
+ timeline:[["12:00","Land at Bagdogra Airport"],["13:00","New Jalpaiguri (NJP) station, collect bikes by 14:00"],["14:00","Lunch, fuel up, check bikes"],["16:00","Ride NJP → Siliguri → Sevoke → Kurseong → Ghum"],["19:00","Reach Ghum / Darjeeling"]],
+ places:[["Teesta river viewpoint, Sevoke","River and bridge views on the Hill Cart Road"],["Kurseong","Tea gardens and a hot chai stop"],["Eagle's Crag, Kurseong","Short viewpoint stop if daylight allows"]],
+ stay:["Ghum, Darjeeling","Zostel Darjeeling"],
+ note:"Sunset is about 16:30 in December, so the last 2 hrs will be in the dark and often in fog. Riding the Hill Cart Road at night is slow. If you slip, push the start earlier or shorten lunch."},
+{n:2,date:"Fri 25 Dec",title:"Explore Darjeeling",alt:2250,place:"Darjeeling",
+ meta:"Rest and sightseeing day · bikes parked",
+ route:[R("Ghum, Darjeeling","Tiger Hill, Darjeeling","Ghum Monastery, Darjeeling")],
+ timeline:[["04:00","Tiger Hill sunrise (Kanchenjunga view, go early)"],["07:00","Ghum Monastery and Batasia Loop"],["09:30","Breakfast at Mall Road / Chowrasta"],["11:00","Himalayan Mountaineering Institute and Zoo"],["14:00","Peace Pagoda, Happy Valley Tea Estate"],["17:00","Toy train joy ride or Mall Road shopping"]],
+ places:[["Tiger Hill","Sunrise over Kanchenjunga, 11 km from town"],["Ghum Monastery (Samten Choeling)","Yellow-hat monastery with a large Maitreya statue"],["Batasia Loop and War Memorial","Toy-train spiral with the mountain view"],["Himalayan Mountaineering Institute","Everest museum and Tenzing's legacy"],["Japanese Peace Pagoda","Calm viewpoint"],["Happy Valley Tea Estate","Tea tasting, factory tour"],["Chowrasta and Mall Road","Cafes such as Glenary's, Keventer's"],["Darjeeling Himalayan Railway (toy train)","Joy ride from Darjeeling station"]],
+ stay:["Ghum, Darjeeling","Zostel Darjeeling"],
+ note:"Tiger Hill is jeep-only before dawn and gets crowded on 25 Dec. Book a shared jeep the night before."},
+{n:3,date:"Sat 26 Dec",title:"Darjeeling → Lachung",alt:2900,place:"Lachung",
+ meta:"≈ 240 km · 9–11 hrs including stops and the permit check (not 9 hrs flat)",
+ route:[R("Darjeeling","Lachung, Sikkim","Mangan, Sikkim")],
+ timeline:[["05:00","Leave Darjeeling, ride down to the Teesta"],["08:30","Breakfast near Rangpo / Singtam"],["11:00","Gangtok bypass, fuel up"],["13:00","Mangan: collect Zero Point and North Sikkim permits"],["14:00","Chungthang (Lachen and Lachung rivers meet)"],["16:30","Reach Lachung (realistic)"]],
+ places:[["Teesta and Rangeet confluence","Photo stop on the way to Sikkim"],["Seven Sisters Waterfall","Roadside waterfall north of Gangtok"],["Mangan permit office","Required: check the stop for Zero Point"],["Bhim Nala and Naga Falls","Waterfalls close to Chungthang"],["Chungthang","Sacred river confluence, last fuel point"]],
+ stay:["Lachung, Sikkim","Lachung homestay"],
+ note:"Mangan permits close in the afternoon, so you must be there by about 14:00. Roads past Chungthang get dark and icy at 16:30. If the ride runs late, consider a stay at Mangan or Chungthang and do Lachung in the morning. Lachung has guesthouses and lodges rather than hostels."},
+{n:4,date:"Sun 27 Dec",title:"Lachung → Yumthang → Zero Point → Lachen",alt:2750,place:"Lachen",
+ meta:"≈ 25 km up to Zero Point and back, then ≈ 35 km to Lachen · full day",
+ route:[R("Lachung, Sikkim","Zero Point, Yumthang, Sikkim","Yumthang Valley, Sikkim"),R("Lachung, Sikkim","Lachen, Sikkim","Chungthang, Sikkim")],
+ timeline:[["05:00","Leave Lachung"],["06:30","Yumthang Valley (3,500 m)"],["08:00","Zero Point (≈ 4,700 m) if the road is open"],["10:30","Back to Lachung for breakfast"],["12:30","Ride Lachung → Chungthang → Lachen"],["15:30","Reach Lachen and rest early"]],
+ places:[["Yumthang Valley","Flower valley (snow-covered in December), hot springs"],["Zero Point (Yumthang)","Snowfields near the Tibet side, often closed after snowfall"],["Lachung Monastery","Small hillside gompa above the village"],["Chungthang","Quick stop on the way"]],
+ stay:["Lachen, Sikkim","Lachen homestay"],
+ note:"I moved Gurudongmar to Day 5. From Lachung it cannot be done the same day: it is a ≈ 190 km round trip from Lachen on a high, rough road, with Thangu on the way and a 3 am start. Zero Point is on the Lachung side; Gurudongmar is on the Lachen side. Both roads can close in snow."},
+{n:5,date:"Mon 28 Dec",title:"Lachen → Gurudongmar → Thangu → Gangtok",alt:1650,place:"Gangtok",
+ meta:"Gurudongmar ≈ 65 km each way from Lachen, then ≈ 120 km to Gangtok · very long day",
+ route:[R("Lachen, Sikkim","Gurudongmar Lake, Sikkim","Thangu Valley, Sikkim"),R("Lachen, Sikkim","Gangtok, Sikkim","Mangan, Sikkim")],
+ timeline:[["03:30","Leave Lachen (earlier than your 5 am to beat the wind)"],["05:30","Thangu Valley"],["07:00","Gurudongmar Lake (5,430 m)"],["10:00","Chopta Valley on the way back"],["11:30","Back in Lachen, breakfast"],["12:30","Ride Lachen → Mangan → Gangtok"],["18:30","Reach Gangtok: shopping on MG Marg"]],
+ places:[["Gurudongmar Lake","One of the highest lakes in India, usually frozen in winter"],["Thangu Valley","High alpine village, last base before the lake"],["Chopta Valley","Snow valley between Thangu and Gurudongmar"],["MG Marg, Gangtok","Pedestrian market, cafes, local shopping"],["Ganesh Tok / Hanuman Tok","Viewpoints if you have the time"]],
+ stay:["Gangtok, Sikkim","Zostel Gangtok"],
+ note:"Altitude sickness is real above 4,500 m; Gurudongmar at 5,430 m makes it worse. Do not stay long, drink water, and turn back if you feel dizzy. Army checkposts may turn riders back past Thangu, and the road is frequently shut in snow. If Gurudongmar is closed, you get a calm morning and a Gangtok afternoon."},
+{n:6,date:"Tue 29 Dec",title:"Gangtok → Zuluk",alt:2900,place:"Zuluk",
+ meta:"≈ 95–100 km via Rongli · 4–5 hrs of slow mountain road",
+ route:[R("Gangtok","Zuluk, Sikkim","Rongli, Sikkim")],
+ timeline:[["05:00","Leave Gangtok"],["07:00","Rongli and Lungthung"],["09:30","Thambi View Point (Kanchenjunga)"],["11:00","Zuluk Zig-Zag road and Gnathang"],["13:00","Check in at Zuluk, village walk"],["16:00","Sunset at Thambi View Point"]],
+ places:[["Lungthung and Thambi View Point","Kanchenjunga viewpoint on the Old Silk Route"],["Zuluk Zig-Zag road","Hairpin switchbacks on the way up from Rongli"],["Gnathang Valley","High plateau with snow and Himalayan views"],["Kupup (Elephant Lake)","Frozen small lake near the border; permit needed"],["Baba Mandir","Army shrine in Sikkim; check the access"]],
+ stay:["Zuluk, Sikkim","Zuluk homestay"],
+ note:"Zuluk and Nathula-side areas need a permit as well. Apply ahead; for outside bikes, the rule may differ. Homestays here are simple, fewer than 20 beds in the whole village, so book early."},
+{n:7,date:"Wed 30 Dec",title:"Zuluk → NJP · Chirag's birthday",alt:120,place:"NJP",
+ meta:"≈ 150 km via Rongli, Pakyong and Siliguri · 5–6 hrs",
+ route:[R("Zuluk, Sikkim","New Jalpaiguri Railway Station","Rongli, Sikkim")],
+ timeline:[["07:00","Sunrise at Thambi, then leave Zuluk"],["12:00","Pakyong / Siliguri lunch"],["15:00","NJP: drop bikes, refuel for the handover"],["16:00","Ship bikes to Bangalore"],["19:00","Chirag's birthday dinner"]],
+ places:[["Siliguri","Momos, thali, local market"],["Mahananda Wildlife Sanctuary / Teesta view","Short stop if there is time"],["Kali Mandir / Salugara Monastery","Quick stops near Siliguri"]],
+ stay:["Siliguri, West Bengal","Siliguri hostel"],
+ note:"Book the bike cargo (railway parcel or a private courier) in advance, and ask for the pick-up time and the damage clause. Keep photos of the bikes before handover. Your note says 'via NIT via piling', which I read as NJP; edit this if you meant something else."},
+{n:8,date:"Thu 31 Dec",title:"NJP → Kolkata",alt:10,place:"Kolkata",
+ meta:"Flight from Bagdogra ≈ 1 hr, or overnight/day train from NJP ≈ 9–10 hrs",
+ route:[R("Bagdogra Airport","Kolkata Airport")],
+ timeline:[["Morning","Flight Bagdogra → Kolkata, or Vande Bharat / Shatabdi train from NJP"],["Afternoon","Victoria Memorial, Maidan, Howrah Bridge"],["Evening","Park Street for New Year's Eve"]],
+ places:[["Victoria Memorial","Marble museum and gardens"],["Howrah Bridge and Flower Market","Early morning is best"],["Prinsep Ghat","Sunset on the Hooghly"],["Park Street","New Year's Eve lights and food"],["Indian Coffee House, College Street","Old-school adda"]],
+ stay:["Kolkata","Kolkata hostel"],
+ note:"Park Street is closed to vehicles and extremely crowded on 31 Dec. Book a stay near Esplanade or Park Street, or somewhere easy to leave by metro."}
+];
+
+const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
+const nav=document.getElementById("nav"),main=document.getElementById("days");
+
+days.forEach(d=>{
+  nav.append(el("a","",`Day ${d.n}`)); nav.lastChild.href="#day"+d.n;
+  const s=el("section","day"); s.id="day"+d.n;
+  let h=`<div class="dh"><h2>Day ${d.n}: ${d.title}</h2><span class="date">${d.date}</span></div><p class="meta">${d.meta}</p>`;
+  h+=`<div class="links">`+d.route.map((r,i)=>`<a href="${r}" target="_blank" rel="noopener">Open route${d.route.length>1?" "+(i+1):""} in Google Maps</a>`).join("")+`</div>`;
+  h+=`<h3>Plan</h3><ul class="tl">`+d.timeline.map(t=>`<li><b>${t[0]}</b> ${t[1]}</li>`).join("")+`</ul>`;
+  h+=`<h3>Sightseeing</h3>`+d.places.map(p=>`<div class="place"><a href="${G(p[0]+" "+d.place)}" target="_blank" rel="noopener">${p[0]}</a><small>${p[1]}</small></div>`).join("");
+  h+=`<div class="stay"><h3>Stay: ${d.stay[0]}</h3><div class="links">
+   <a href="${G("hostel "+d.stay[0])}" target="_blank" rel="noopener">Hostels on Maps</a>
+   <a href="${G("homestay "+d.stay[0])}" target="_blank" rel="noopener">Homestays on Maps</a>
+   <a href="${B(d.stay[0])}" target="_blank" rel="noopener">Booking.com</a>
+   <a href="${H(d.stay[0])}" target="_blank" rel="noopener">Hostelworld</a>
+   <a href="${G(d.stay[1])}" target="_blank" rel="noopener">${d.stay[1]}</a></div></div>`;
+  h+=`<div class="note">${d.note}</div>`;
+  s.innerHTML=h; main.append(s);
+});
+
+// altitude profile
+const svg=document.getElementById("profile"),W=800,Hh=200,max=3200,x0=30,x1=770;
+const pts=days.map((d,i)=>[x0+i*(x1-x0)/(days.length-1),170-(d.alt/max)*130]);
+let p="M"+x0+",180 ";pts.forEach(q=>p+="L"+q[0]+","+q[1]+" ");p+="L"+x1+",180Z";
+let s=`<path d="${p}" fill="var(--chip)" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>`;
+pts.forEach((q,i)=>{s+=`<circle cx="${q[0]}" cy="${q[1]}" r="4" fill="var(--accent)"/><text x="${q[0]}" y="${q[1]-12}" text-anchor="middle" font-size="12" fill="var(--ink)" font-family="system-ui,sans-serif">${days[i].place}</text><text x="${q[0]}" y="196" text-anchor="middle" font-size="11" fill="var(--mute)" font-family="system-ui,sans-serif">Day ${days[i].n}</text>`});
+svg.innerHTML=s+`<text x="${W-30}" y="18" text-anchor="end" font-size="11" fill="var(--mute)" font-family="system-ui,sans-serif">Overnight altitude, max ≈ 3,000 m</text>`;
+</script>
+</body>
+</html>
