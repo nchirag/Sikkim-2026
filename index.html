@@ -31,8 +31,15 @@ a{color:var(--accent)}
 #pills a:focus-visible,button:focus-visible,.links a:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
 #theme{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 12px;cursor:pointer;font:inherit;font-size:.9rem}
 .layout{margin:0 auto;padding:24px 20px 60px;display:grid;grid-template-columns:minmax(0,1fr);max-width:860px}
-section.day{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:0 0 22px;padding:24px;opacity:.78;transition:opacity .25s,box-shadow .25s}
-section.day.on{opacity:1;box-shadow:0 10px 30px #0a223314;border-color:var(--accent)}
+section.day{display:none;background:var(--card);border:1px solid var(--line);border-radius:16px;margin:0 0 22px;padding:24px;}
+section.day.on{display:block;box-shadow:0 10px 30px #0a223314;animation:in .25s}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.pager{display:flex;justify-content:space-between;gap:10px;margin-top:22px}
+.pager button{flex:1;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 .95rem "Instrument Sans",sans-serif;cursor:pointer}
+.pager button.next{background:var(--accent);border-color:var(--accent);color:#fff}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager.top{margin:0 0 16px}
+.hint{color:var(--mute);font-size:.8rem;text-align:center;margin-top:10px}
 .dh .date{display:inline-block;background:var(--chip);color:var(--accent);padding:3px 12px;border-radius:99px;font-size:.82rem;font-weight:600;margin-bottom:8px}
 .dh h2{font-size:clamp(1.5rem,3.4vw,2.1rem);line-height:1.1;letter-spacing:-.02em}
 .meta{color:var(--mute);font-size:.92rem;margin:8px 0 12px}
@@ -76,9 +83,7 @@ footer{max-width:860px;margin:0 auto;padding:0 20px 50px;color:var(--mute);font-
 <div class="layout">
 <main id="days"></main>
 </div>
-<div class="layout" style="padding-top:0">
-<section class="day on" style="opacity:1"><div class="dh"><h2>Before you go</h2></div><ul class="chk" id="chk"></ul></section>
-</div>
+<section class="day" id="day9"><div class="dh"><span class="date">Checklist</span><h2>Before you go</h2></div><ul class="chk" id="chk"></ul></section>
 <footer>Times and distances are estimates; check live traffic in Google Maps. Stay links are searches, so confirm prices, availability and reviews before booking.</footer>
 <script>
 const G=q=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
@@ -155,23 +160,35 @@ days.forEach(d=>{
  <h3>Sightseeing</h3><div class="places">`+d.places.map(p=>`<a class="place" href="${G(p[0]+" "+d.place)}" target="_blank" rel="noopener"><b>${p[0]}</b><small>${p[1]}</small></a>`).join("")+`</div>
  <h3>Where to stay: ${d.stay[0]}</h3><div class="links"><a href="${G("hostel "+d.stay[0])}" target="_blank" rel="noopener">Hostels</a><a href="${G("homestay "+d.stay[0])}" target="_blank" rel="noopener">Homestays</a><a href="${B(d.stay[0])}" target="_blank" rel="noopener">Booking.com</a><a href="${H(d.stay[0])}" target="_blank" rel="noopener">Hostelworld</a><a href="${G(d.stay[1])}" target="_blank" rel="noopener">${d.stay[1]}</a></div>
  <div class="note">${d.note}</div>`;
- main.append(s);
+ s.dataset.i=d.n;main.append(s);
 });
+const ck9=document.getElementById("day9");main.append(ck9);const pk=el("a","","Checklist");pk.href="#day9";pills.append(pk);
+const TOTAL=9;
 
 // checklist
 const items=["Apply for North Sikkim permits (Lachung, Lachen, Yumthang, Zero Point, Gurudongmar) and confirm at Mangan; carry ID photocopies","Confirm in writing that your rental bikes are allowed into North Sikkim and Zuluk","Winter gear: thermals, insulated gloves, balaclava, waterproof riding jacket (−10°C at Lachen and above)","Spare tubes, puncture kit, chain lube, tow rope and cash (few ATMs above Mangan)","Fuel up at Mangan or Gangtok; no pumps beyond Chungthang","Book every stay ahead; 24–31 Dec is peak season","Check road and weather updates each morning; high roads close after snow","Book bike cargo from NJP to Bangalore"];
 const ck=document.getElementById("chk");let saved={};try{saved=JSON.parse(localStorage.getItem("sk26")||"{}")}catch(e){}
 items.forEach((t,i)=>{const li=el("li","",`<label><input type="checkbox" ${saved[i]?"checked":""}><span>${t}</span></label>`);li.querySelector("input").onchange=e=>{saved[i]=e.target.checked;try{localStorage.setItem("sk26",JSON.stringify(saved))}catch(x){}};ck.append(li)});
 
-function setActive(n){
- document.querySelectorAll("#pills a").forEach(a=>a.classList.toggle("on",a.hash==="#day"+n));
- document.querySelectorAll("section.day[id]").forEach(s=>s.classList.toggle("on",s.id==="day"+n));
- const a=document.querySelector("#pills a.on");a&&a.scrollIntoView({inline:"center",block:"nearest"});
-}
+function pager(n,top){const p=el("div","pager"+(top?" top":""));
+ const pv=el("button","prev",n>1?"← "+(n===9?"Day 8":"Day "+(n-1)):"← Back");pv.disabled=n===1;pv.onclick=()=>go(n-1);
+ const nx=el("button","next",n<8?"Day "+(n+1)+" →":n===8?"Checklist →":"Done");nx.disabled=n===TOTAL;nx.onclick=()=>go(n+1);
+ p.append(pv,nx);return p}
+document.querySelectorAll("section.day").forEach(sec=>{const n=sec.id==="day9"?9:+sec.id.slice(3);sec.prepend(pager(n,true));sec.append(pager(n,false));sec.append(el("p","hint","Tip: swipe left or right, or use the arrow keys"))});
 let cur=0;
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const n=+e.target.id.slice(3);if(n!==cur){cur=n;setActive(n)}}}),{rootMargin:"-35% 0px -60% 0px"});
-document.querySelectorAll("section.day[id^=day]").forEach(s=>io.observe(s));
-setTimeout(()=>{if(!cur){cur=1;setActive(1)}},300);
+function setActive(n,scroll){
+ if(n<1||n>TOTAL)return;cur=n;
+ document.querySelectorAll("#pills a").forEach(a=>a.classList.toggle("on",a.hash==="#day"+n));
+ document.querySelectorAll("section.day").forEach(x=>x.classList.toggle("on",x.id==="day"+n));
+ const a=document.querySelector("#pills a.on");a&&a.scrollIntoView({inline:"center",block:"nearest"});
+ if(scroll){const bar=document.querySelector(".bar");window.scrollTo({top:Math.max(0,document.querySelector(".layout").offsetTop-bar.offsetHeight-8),behavior:"smooth"})}
+}
+function go(n){if(n<1||n>TOTAL)return;try{history.replaceState(null,"","#day"+n)}catch(e){}setActive(n,true)}
+pills.addEventListener("click",e=>{const a=e.target.closest("a");if(a){e.preventDefault();go(+a.hash.slice(4))}});
+addEventListener("keydown",e=>{if(e.target.matches("input,textarea")||e.metaKey||e.ctrlKey||e.altKey)return;if(e.key==="ArrowRight")go(cur+1);if(e.key==="ArrowLeft")go(cur-1)});
+let tx=0,ty=0;main.addEventListener("touchstart",e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+main.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(Math.abs(dx)>70&&Math.abs(dy)<50)go(cur+(dx<0?1:-1))},{passive:true});
+const h=parseInt((location.hash.match(/^#day(\d)$/)||[])[1]);setActive(h>=1&&h<=TOTAL?h:1,false);
 
 // altitude profile
 const svg=document.getElementById("profile"),x0=30,x1=770,max=3200;
